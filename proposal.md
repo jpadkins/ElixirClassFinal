@@ -19,7 +19,7 @@ This project will consist of two parts:
 The server will use Phoenix Channels for the connection with the client.
 The rooms of the channel will correspond to "rooms" in the game. Actions
 taken by the client will be recieved by the server which will broadcast
-an event message, that will cause other processes to update themselves,
+an event message that will cause other processes to update themselves,
 take actions, or ignore the message according to thier own roles.
 
 
@@ -28,7 +28,8 @@ keeping track of items' locations, details, etc.. One that acts as a
 "warehouse of character information", keeping track of characters'
 location, stats, etc. I will also have a GenServer that handles events
 and either updates the Item Warehouse or the Character Warehouse
-accordingly.
+accordingly. A supervisor will keep track of all of these GenServers
+and restart them if need be.
 
 
 I plan on this application being completely event-driven, instead of
