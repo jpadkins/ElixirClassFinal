@@ -4,6 +4,14 @@ defmodule MudClient.SocketClient do
   alias Phoenix.Channels.GenSocketClient
   @behaviour GenSocketClient
 
+  #######
+  # API #
+  #######
+
+  ##################
+  # IMPLEMENTATION #
+  ##################
+
   def start_link() do
     GenSocketClient.start_link(
           __MODULE__,
@@ -17,7 +25,7 @@ defmodule MudClient.SocketClient do
   end
 
   def handle_connected(transport, state) do
-    Logger.info("connected")
+    Logger.info("Connected to The Server!")
     GenSocketClient.join(transport, "room:login")
     {:ok, state}
   end
@@ -29,14 +37,10 @@ defmodule MudClient.SocketClient do
   end
 
   def handle_joined(topic, _payload, _transport, state) do
-    Logger.info("joined the topic #{topic}")
-
     if state.first_join do
-      :timer.send_interval(:timer.seconds(1), self(), :ping_server)
-      {:ok, %{state | first_join: false, ping_ref: 1}}
-    else
-      {:ok, %{state | ping_ref: 1}}
+      :timer.send_interval(:timer.seconds(1), self(), :heartbeat)
     end
+    {:ok, state}
   end
 
   def handle_join_error(topic, payload, _transport, state) do
@@ -51,27 +55,26 @@ defmodule MudClient.SocketClient do
   end
 
   def handle_message(topic, event, payload, _transport, state) do
-    Logger.warn("message on topic #{topic}: #{event} #{inspect payload}")
+    IO.puts "#{topic}:#{event} :: #{inspect payload}"
     {:ok, state}
   end
 
   def handle_reply("ping", _ref, %{"status" => "ok"} = payload, _transport, state) do
-    Logger.info("server pong ##{payload["response"]["ping_ref"]}")
     {:ok, state}
   end
 
   def handle_reply(topic, _ref, payload, _transport, state) do
-    Logger.warn("reply on topic #{topic}: #{inspect payload}")
+    IO.puts "Reply-#{topic} :: #{inspect payload}"
     {:ok, state}
   end
 
   def handle_info(:connect, _transport, state) do
-    Logger.info("connecting")
+    Logger.info("connecting...")
     {:connect, state}
   end
 
   def handle_info({:join, topic}, transport, state) do
-    Logger.info("joining the topic #{topic}")
+    IO.puts "joining the topic #{topic}"
     case GenSocketClient.join(transport, topic) do
       {:error, reason} ->
         Logger.error("error joining the topic #{topic}: #{inspect reason}")
@@ -82,14 +85,14 @@ defmodule MudClient.SocketClient do
     {:ok, state}
   end
 
-  def handle_info(:ping_server, transport, state) do
-    Logger.info("sending ping ##{state.ping_ref}")
-    GenSocketClient.push(transport, "ping", "ping", %{ping_ref: state.ping_ref})
-    {:ok, %{state | ping_ref: state.ping_ref + 1}}
+  def handle_info(:heartbeat, transport, state) do
+    GenSocketClient.push(transport, "room:login", "message:ping", nil)
+    {:ok, state}
   end
 
   def handle_info(message, _transport, state) do
     Logger.warn("Unhandled message #{inspect message}")
     {:ok, state}
   end
+
 end

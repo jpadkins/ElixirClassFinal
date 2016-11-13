@@ -1,6 +1,7 @@
 defmodule MudServer.RoomChannel do
   use MudServer.Web, :channel
   alias MudServer.Presence
+  require Logger
 
   def join("room:login", _, socket) do
     send self, :after_join
@@ -14,16 +15,17 @@ defmodule MudServer.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
   def handle_in("message:new", message, socket) do
     broadcast! socket, "message:user", %{
       username: socket.assigns.timestamp,
       body: message,
       timestamp: :os.system_time(:milli_seconds)
     }
+    {:noreply, socket}
+  end
+
+  def handle_in("message:ping", _message, socket) do
+    Logger.warn "PING from #{socket.assigns.timestamp}"
     {:noreply, socket}
   end
 end
