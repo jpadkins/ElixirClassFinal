@@ -24,8 +24,8 @@ defmodule MudServer.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_in("message:ping", _message, socket) do
-    Logger.warn "PING from #{socket.assigns.timestamp}"
+  def handle_in("message:ping", _payload, socket) do
+    IO.puts "received ping from #{inspect socket.transport_pid}"
     {:noreply, socket}
   end
 end
