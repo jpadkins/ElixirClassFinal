@@ -1,7 +1,7 @@
 defmodule MudServer.RoomChannel do
   use MudServer.Web, :channel
   alias MudServer.Presence
-  require Logger
+  alias MudServer.ItemServer
 
   def join("room:login", _, socket) do
     send self, :after_join

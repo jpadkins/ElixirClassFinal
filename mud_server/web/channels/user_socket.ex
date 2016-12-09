@@ -9,7 +9,9 @@ defmodule MudServer.UserSocket do
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   def connect(_params, socket) do
-    socket = assign socket, :username, :os.system_time(:milli_seconds)
+    socket = socket
+    |> assign(:username, :os.system_time(:milli_seconds))
+    |> assign(:timestamp, :os.system_time(:milli_seconds))
     {:ok, socket}
   end
 

@@ -14,6 +14,7 @@ defmodule MudServer do
       supervisor(MudServer.Endpoint, []),
       # Start your own worker by calling: MudServer.Worker.start_link(arg1, arg2, arg3)
       # worker(MudServer.Worker, [arg1, arg2, arg3]),
+      supervisor(MudServer.ItemServer, []),
       supervisor(MudServer.Presence, []),
     ]
 
