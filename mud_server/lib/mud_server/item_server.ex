@@ -1,4 +1,10 @@
 defmodule MudServer.ItemServer do
+  @moduledoc """
+  This module handles the movement of items between
+  players and the ground.
+
+  Author: Jacob Adkins
+  """
   use GenServer
   alias MudServer.Item
   @me :item_server
@@ -11,30 +17,53 @@ defmodule MudServer.ItemServer do
     GenServer.start_link(__MODULE__, [], name: @me)
   end
 
+  @doc """
+  returns the loose items on the floor
+  """
   def get_loose_items do
     GenServer.call(@me, :get_loose_items)
   end
 
+  @doc """
+  puts a loose item on the floor
+  """
   def put_loose_items(item) do
     GenServer.call(@me, {:put_loose_items, item})
   end
 
+  @doc """
+  removes a loose item from the floor
+  """
   def del_loose_items(item) do
     GenServer.call(@me, {:del_loose_items, item})
   end
 
+  @doc """
+  returns the items in a player's inventory (id is their username)
+  """
   def get_player_items(id) do
     GenServer.call(@me, {:get_player_items, id})
   end
 
+  @doc """
+  puts an item in a player's inventory (id is their username)
+  """
   def put_player_items(item, id) do
     GenServer.call(@me, {:put_player_items, item, id})
   end
 
+  @doc """
+  removes an item from a player's inventory (id is their username)
+  """
   def del_player_items(item, id) do
     GenServer.call(@me, {:del_player_items, item, id})
   end
 
+  @doc """
+  picks an item off the ground and places it in a player's inventory
+  id - player's username
+  item_name - name field of the item
+  """
   def pickup(id, item_name) do
     get_loose_items
       |> Enum.find(&(&1.name == item_name))
@@ -42,6 +71,11 @@ defmodule MudServer.ItemServer do
       |> del_loose_items
   end
 
+  @doc """
+  removes an item from a player's inventory and places it on the ground
+  id - player's username
+  item_name - name field of the item
+  """
   def putdown(id, item_name) do
     get_player_items(id)
       |> Enum.find(&(&1.name == item_name))

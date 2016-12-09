@@ -1,4 +1,8 @@
 defmodule MudServer.RoomChannel do
+  @moduledoc """
+  This channel handles communications with the connected
+  players and parses and executes their commands.
+  """
   use MudServer.Web, :channel
   alias MudServer.Presence
   alias MudServer.ItemServer

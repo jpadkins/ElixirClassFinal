@@ -1,4 +1,17 @@
 defmodule MudClient.SocketClient do
+  @moduledoc """
+  This module implements a behavior that allows
+  for easy connecting to a phoenix channel using the
+  erland websocket library.
+
+  The super implementation of the behavior is from
+  this repository:
+
+  https://github.com/Aircloak/phoenix_gen_socket_client
+
+  Most of the callbacks here are self-explanatory or
+  easy to understand by reading the IO.puts line.
+  """
   alias Phoenix.Channels.GenSocketClient
   @behaviour GenSocketClient
 
@@ -63,6 +76,11 @@ defmodule MudClient.SocketClient do
   # Message Handlers #
   ####################
 
+  @doc """
+  Right now the presence events don't tie into anything. Finding
+  the local users is handled on the server side via the "look" command
+  that checks the Presence.
+  """
   def handle_message(topic, event, payload, _transport, state) do
     case event do
       "presence_diff" -> IO.puts "presence diff"
@@ -91,6 +109,9 @@ defmodule MudClient.SocketClient do
     {:ok, state}
   end
 
+  @doc """
+  TODO: Better, non-blocking I/O
+  """
   def handle_info({:get_message}, _transport, state) do
     message = Task.async(fn -> IO.gets "command> " end)
     |> Task.await(:infinity)
@@ -109,6 +130,9 @@ defmodule MudClient.SocketClient do
     {:ok, state}
   end
 
+  @doc """
+  Prevents the client from timing out and being disconnected
+  """
   def handle_info(:ping_server, transport, state) do
     IO.puts "sending stay-alive ping..."
     GenSocketClient.push(transport, "room:login", "message:ping", "ping")
