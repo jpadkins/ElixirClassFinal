@@ -25,7 +25,7 @@ For my final project I created a simple **MUD** (or multi-user dungeon) in Elixi
 Here is a screenshot of an example session, showing off most of the commands from the viewpoint of both the web and terminal clients:
 ![screenshot](screenshot.png?raw=true)
 
-A majority of my original code is in the files
+A majority of my code (and not boilerplate) is in the files
  * **mud_client/lib/mud_client/socket_client.ex**
  * **mud_server/web/channels/room_channel.ex**
  * **mud_server/lib/mux_server/item_server.ex**
