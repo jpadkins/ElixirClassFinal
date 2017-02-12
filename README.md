@@ -44,9 +44,4 @@ I am very much interested in continuing this project as a pet project. Some of t
  * improve stability and add tests
 
 ### Conclusion
-
-Mr. Thomas, thank you for teaching this semester. I truly enjoyed your lectures and learned a lot. And thank you again for the extension on the final project, I greatly appreciate it.
-
-I will definitely be remaking this MUD seriously as a pet project. I've found it to be night-and-day easier to implement something like this (and much more fun) in Elixir than C so far. I just need to figure out the best patterns to use and how to organize things. If you would like to follow my progress, I'll be blogging about it on my website, **jpa.io** (which I have yet to get around to fully migrating, so excuse the current mess).
-
-Hopefully I'll run into you again down the road. If there are any interesting open source projects that you end up needing help with at some point in time, let me know. Until then, best of luck with the Pragmatic Bookshelf and your other pursuits!
+(omitted on Github)
